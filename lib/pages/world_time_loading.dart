@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:seal_world_time/models/world_time.dart';
 
 class WorldTimeLoading extends StatefulWidget {
   const WorldTimeLoading({Key? key}) : super(key: key);
@@ -13,14 +14,10 @@ class _WorldTimeLoadingState extends State<WorldTimeLoading> {
   @override
   void initState() {
     super.initState();
-    getTime();
-  }
-
-  void getTime() async {
-    http.Response response = await http
-        .get(Uri.parse('https://worldtimeapi.org/api/timezone/Asia/Jakarta'));
-    Map jsonMap = jsonDecode(response.body);
-    print('data = ${jsonMap}');
+    WorldTimeApi api = WorldTimeApi(timezone: 'America/New_York');
+    api.getTime().then((WorldTimeResponse response) {
+      print(response.date);
+    });
   }
 
   @override
