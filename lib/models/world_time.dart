@@ -1,5 +1,7 @@
 import 'package:http/http.dart' as http;
+import 'package:seal_world_time/models/results.dart';
 import 'dart:convert';
+import 'package:intl/intl.dart';
 
 class WorldTimeResponse {
   final int year;
@@ -32,6 +34,18 @@ class WorldTimeResponse {
     required this.dstActive,
   });
 
+  String readableTime() {
+    return DateFormat.jm().format(DateTime(
+      year,
+      month,
+      day,
+      hour,
+      minute,
+      seconds,
+      milliSeconds,
+    ));
+  }
+
   factory WorldTimeResponse.fromJson(Map<dynamic, dynamic> json) {
     return WorldTimeResponse(
       year: json['year'],
@@ -56,14 +70,20 @@ class WorldTimeApi {
 
   WorldTimeApi({required this.timezone});
 
-  Future<WorldTimeResponse> getTime() async {
+  Future<Result> getTime() async {
     Uri query = Uri.https('www.timeapi.io', 'api/time/current/zone', {
-      'timezone': 'America/New_York',
+      'timezone': timezone,
     });
-
-    http.Response response = await http.get(query);
-    Map jsonMap = jsonDecode(response.body);
-    WorldTimeResponse responseModel = WorldTimeResponse.fromJson(jsonMap);
-    return responseModel;
+    try {
+      http.Response response = await http.get(query);
+      if (response.statusCode != 200) {
+        return const Error<String>("Failed to get time");
+      }
+      Map jsonMap = jsonDecode(response.body);
+      WorldTimeResponse responseModel = WorldTimeResponse.fromJson(jsonMap);
+      return Success<WorldTimeResponse>(responseModel);
+    } catch (e) {
+      return Error<String>('An error occurred: $e');
+    }
   }
 }
