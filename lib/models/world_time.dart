@@ -46,6 +46,10 @@ class WorldTimeResponse {
     ));
   }
 
+  bool isDayTime() {
+    return hour > 6 && hour < 20;
+  }
+
   factory WorldTimeResponse.fromJson(Map<dynamic, dynamic> json) {
     return WorldTimeResponse(
       year: json['year'],

@@ -21,12 +21,12 @@ class _WorldTimeLoadingState extends State<WorldTimeLoading> {
     var result = await api.getTime();
     if (result is Success<WorldTimeResponse>) {
       Navigator.pushReplacementNamed(context, '/home', arguments: {
-        'time': result.data.readableTime(),
+        'time_result': result,
         'location': api.timezone,
       });
     } else if (result is Error<String>) {
       Navigator.pushReplacementNamed(context, '/home', arguments: {
-        'time': result.error,
+        'time_result': result,
         'location': api.timezone,
       });
     }
