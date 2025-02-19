@@ -8,10 +8,10 @@ class ChooseLocation extends StatefulWidget {
   const ChooseLocation({Key? key}) : super(key: key);
 
   @override
-  _ChooseLocationState createState() => _ChooseLocationState();
+  ChooseLocationState createState() => ChooseLocationState();
 }
 
-class _ChooseLocationState extends State<ChooseLocation> {
+class ChooseLocationState extends State<ChooseLocation> {
   List<String> availableTimeZones = [];
   @override
   void initState() {

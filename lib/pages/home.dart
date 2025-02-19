@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:seal_world_time/models/results.dart';
+import 'package:seal_world_time/models/seal_time.dart';
 import 'package:seal_world_time/rutes.dart' as route;
 import 'package:seal_world_time/models/world_time.dart';
 
@@ -7,10 +8,10 @@ class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
 
   @override
-  _HomeState createState() => _HomeState();
+  HomeState createState() => HomeState();
 }
 
-class _HomeState extends State<Home> {
+class HomeState extends State<Home> {
   Map data = {};
 
   @override
@@ -19,9 +20,12 @@ class _HomeState extends State<Home> {
     Result result = data['time_result'];
     String timeText = '';
     String bgImageName = '';
-    if (result is Success<WorldTimeResponse>) {
-      timeText = result.data.readableTime();
-      bgImageName = result.data.isDayTime() ? 'day.png' : 'night.png';
+    if (result is Success<SealTime?>) {
+      final timeObject = result.data as SealTime?;
+      if (timeObject != null) {
+        timeText = timeObject.readableTime();
+        bgImageName = timeObject.isDayTime() ? 'day.png' : 'night.png';
+      }
     } else if (result is Error<String>) {
       timeText = result.error;
     }

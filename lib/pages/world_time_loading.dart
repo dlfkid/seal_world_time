@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:seal_world_time/models/results.dart';
+import 'package:seal_world_time/models/seal_time.dart';
 import 'package:seal_world_time/models/world_time.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:flutter/scheduler.dart';
 
 class WorldTimeLoading extends StatefulWidget {
-  WorldTimeLoading({Key? key}) : super(key: key);
+  const WorldTimeLoading({Key? key}) : super(key: key);
 
   @override
   _WorldTimeLoadingState createState() => _WorldTimeLoadingState();
@@ -19,17 +21,19 @@ class _WorldTimeLoadingState extends State<WorldTimeLoading> {
   void updateTime() async {
     WorldTimeApi api = WorldTimeApi(timezone: timeZone);
     var result = await api.getTime();
-    if (result is Success<WorldTimeResponse>) {
-      Navigator.pushReplacementNamed(context, '/home', arguments: {
-        'time_result': result,
-        'location': api.timezone,
-      });
-    } else if (result is Error<String>) {
-      Navigator.pushReplacementNamed(context, '/home', arguments: {
-        'time_result': result,
-        'location': api.timezone,
-      });
-    }
+    SchedulerBinding.instance.addPostFrameCallback((_) {
+      if (result is Success<SealTime?>) {
+        Navigator.pushReplacementNamed(context, '/home', arguments: {
+          'time_result': result,
+          'location': api.timezone,
+        });
+      } else if (result is Error<String>) {
+        Navigator.pushReplacementNamed(context, '/home', arguments: {
+          'time_result': result,
+          'location': api.timezone,
+        });
+      }
+    });
   }
 
   @override

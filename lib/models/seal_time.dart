@@ -5,6 +5,7 @@ import 'dart:convert';
 import 'package:built_collection/built_collection.dart';
 import 'package:built_value/built_value.dart';
 import 'package:built_value/serializer.dart';
+import 'package:intl/intl.dart';
 
 part 'seal_time.g.dart';
 
@@ -41,4 +42,20 @@ abstract class SealTime implements Built<SealTime, SealTimeBuilder> {
   bool get dstActive;
 
   static Serializer<SealTime> get serializer => _$sealTimeSerializer;
+
+  String readableTime() {
+    return DateFormat.jm().format(DateTime(
+      year,
+      month,
+      day,
+      hour,
+      minute,
+      seconds,
+      milliSeconds,
+    ));
+  }
+
+  bool isDayTime() {
+    return hour > 6 && hour < 20;
+  }
 }
